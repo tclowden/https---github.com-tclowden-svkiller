@@ -1,22 +1,27 @@
+// src/app/api/custom-fields/[id]/options/[optionId]/route.ts
 export const runtime = "nodejs";
 
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { ensureDb, getSequelize } from "@/lib/db";
-import { revalidatePath } from "next/cache";
 
 export async function DELETE(
-  _: Request,
-  { params }: { params: { id: string; optionId: string } }
+  _req: NextRequest,
+  ctx: { params: Promise<{ id: string; optionId: string }> } // 👈 Next 15: params is a Promise
 ) {
+  const { id, optionId } = await ctx.params; // 👈 await it
+
   await ensureDb();
   const s = getSequelize();
   const CustomFieldOption = s.model("CustomFieldOption") as any;
 
-  const n = await CustomFieldOption.destroy({
-    where: { id: params.optionId, custom_field_id: params.id },
+  const opt = await CustomFieldOption.findOne({
+    where: { id: optionId, custom_field_id: id },
   });
-  if (!n) return NextResponse.json({ error: "not found" }, { status: 404 });
 
-  revalidatePath("/admin/custom-fields");
+  if (!opt) {
+    return NextResponse.json({ error: "not found" }, { status: 404 });
+  }
+
+  await opt.destroy();
   return NextResponse.json({ ok: true });
 }
