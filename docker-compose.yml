@@ -1,0 +1,22 @@
+
+
+services:
+  db:
+    image: postgres:15
+    container_name: svkiller-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: pm
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: svkiller
+    ports:
+      - "5432:5432"
+    volumes:
+      # You can keep multiple mounts here, but only ONE 'volumes:' key
+      - pgdata:/var/lib/postgresql/data
+      # Example of an optional init scripts folder (remove if you don't need it)
+      # - ./initdb:/docker-entrypoint-initdb.d:ro
+
+volumes:
+  # Top-level volumes map must also appear only once
+  pgdata:
