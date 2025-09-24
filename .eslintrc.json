@@ -1,0 +1,26 @@
+{
+  "extends": ["next/core-web-vitals", "plugin:@typescript-eslint/recommended"],
+  "rules": {
+    // keep your global rules here
+  },
+  "overrides": [
+    {
+      "files": [
+        "src/app/**/*.ts",
+        "src/app/**/*.tsx",
+        "src/components/**/*.tsx",
+        "src/lib/**/*.ts"
+      ],
+      "rules": {
+        "@typescript-eslint/no-explicit-any": "off"   // or "warn"
+      }
+    },
+    {
+      "files": ["src/migrations/**/*", "src/seeders/**/*", "scripts/**/*"],
+      "rules": {
+        "@typescript-eslint/no-require-imports": "off",
+        "@typescript-eslint/no-explicit-any": "off"
+      }
+    }
+  ]
+}
